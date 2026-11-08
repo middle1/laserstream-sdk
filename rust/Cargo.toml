@@ -85,3 +85,8 @@ path = "test/block_integrity.rs"
 [[bin]]
 name = "subscription_replacement_persistence_test"
 path = "test/subscription_replacement_persistence.rs"
+
+# Local copies of the core crates (crates.io 14.0.0) so the proto build can be changed in-tree.
+[patch.crates-io]
+laserstream-core-client = { path = "vendor/laserstream-core-client" }
+laserstream-core-proto = { path = "vendor/laserstream-core-proto" }
