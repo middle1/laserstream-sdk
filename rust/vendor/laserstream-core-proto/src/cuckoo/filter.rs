@@ -252,7 +252,7 @@ impl<T> From<&CuckooFilter<T, YellowstoneHasherBuilder>> for ProtoCuckooFilter {
             .collect();
 
         Self {
-            data,
+            data: data.into(),
             bucket_count: filter.buckets.len() as u32,
             entries_per_bucket: ENTRIES_PER_BUCKET as u32,
             fingerprint_bits: FINGERPRINT_BITS,

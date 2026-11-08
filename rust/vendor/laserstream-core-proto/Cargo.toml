@@ -49,6 +49,10 @@ default = [
     "tonic",
     "tonic-compression",
 ]
+# Generate `bytes::Bytes` instead of `Vec<u8>` for geyser protobuf `bytes` fields.
+# Decoding then slices the receive buffer (refcounted) instead of copying each field.
+# Changes public field types, so it is opt-in.
+zero-copy = []
 plugin = [
     "convert",
     "dep:agave-geyser-plugin-interface",

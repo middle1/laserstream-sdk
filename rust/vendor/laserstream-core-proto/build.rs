@@ -3,17 +3,27 @@ use {
     tonic_prost_build::manual::{Builder, Method, Service},
 };
 
+/// With the `zero-copy` feature, protobuf `bytes` fields in `geyser` are generated as
+/// `bytes::Bytes` (refcounted slices of the received frame) instead of `Vec<u8>`.
+fn configure(builder: tonic_prost_build::Builder) -> tonic_prost_build::Builder {
+    if env::var_os("CARGO_FEATURE_ZERO_COPY").is_some() {
+        builder.bytes(".geyser")
+    } else {
+        builder
+    }
+}
+
 fn main() -> anyhow::Result<()> {
     std::env::set_var("PROTOC", protobuf_src::protoc());
 
     // build protos
-    tonic_prost_build::configure().compile_protos(&["proto/geyser.proto"], &["proto"])?;
+    configure(tonic_prost_build::configure()).compile_protos(&["proto/geyser.proto"], &["proto"])?;
 
     // build protos without tonic (wasm)
     let out_dir = env::var("OUT_DIR").expect("OUT_DIR not found");
     let out_dir_path = Path::new(&out_dir).join("no-tonic");
     fs::create_dir_all(&out_dir_path).expect("failed to create out no-tonic directory");
-    tonic_prost_build::configure()
+    configure(tonic_prost_build::configure())
         .build_client(false)
         .build_server(false)
         .out_dir(out_dir_path)

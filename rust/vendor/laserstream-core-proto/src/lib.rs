@@ -703,7 +703,7 @@ pub mod convert_from {
         let pubkey = create_pubkey(&account.pubkey)?;
         let account = Account {
             lamports: account.lamports,
-            data: account.data,
+            data: Vec::from(account.data), // moves with `Vec<u8>`; copies out of `Bytes` (zero-copy)
             owner: create_pubkey(&account.owner)?,
             executable: account.executable,
             rent_epoch: account.rent_epoch,
